@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        
+        facebook-log in or sign up
+        
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="./bootstrap.css">
+    <link rel="stylesheet" href="./login.css">
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            max-width: 90%;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .modal h2 {
+            text-align: center;
+            color: #1877f2;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .form-row input {
+            flex: 1;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #1877f2;
+            box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+        }
+
+        .signup-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #42b72a;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .signup-btn:hover {
+            background-color: #36a420;
+        }
+
+        .signup-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .error-message, .success-message {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        .success-message {
+            background-color: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .terms-text {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+            margin-top: 15px;
+            line-height: 1.4;
+        }
+
+        .terms-text a {
+            color: #1877f2;
+            text-decoration: none;
+        }
+
+        .terms-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Password Recovery Specific Styles */
+        .recovery-step {
+            display: none;
+        }
+
+        .recovery-step.active {
+            display: block;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #1877f2;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 15px;
+            padding: 0;
+        }
+
+        .back-btn:hover {
+            text-decoration: underline;
+        }
+
+        .verification-code {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .verification-code input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .verification-code input:focus {
+            border-color: #1877f2;
+            outline: none;
+        }
+
+        .resend-link {
+            color: #1877f2;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .resend-link:hover {
+            text-decoration: underline;
+        }
+
+        .resend-link.disabled {
+            color: #999;
+            cursor: not-allowed;
+        }
+
+        .password-requirements {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+
+        .password-requirements h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .requirement {
+            margin: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .requirement.valid {
+            color: #2e7d32;
+        }
+
+        .requirement.invalid {
+            color: #c62828;
+        }
+
+        .requirement i {
+            font-size: 12px;
+        }
+
+        .btn-primary {
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #166fe5;
+        }
+
+        .btn-primary:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+        
+             <div class="container border-0 ">
+                     <div class="content">
+                        <h1 class="h1 text-primary">facebook</h1>
+                        <p class="paragraph">Facebook helps you connect and share with the people in your life.</p>
+                     </div>
+               
+                       <form class="login1 border rounded-3" id="loginForm">
+                               <input class="form-label username rounded-1 border pholder" type="text" placeholder="Email address or Phone number" id="emailInput" required>   
+                               <input class="password rounded-1 border pholder" type="password" placeholder="Password" id="passwordInput" required>
+                               <input class="btn btn-primary" type="submit" value="login" id="loginBtn"/>
+                               <a href="#" class="forgetpassword" id="forgotPasswordBtn">forgotten Password?</a>
+                              <hr>
+                               
+                              <div class="createnew btn">
+                                <a href="#"  class="account" id="createAccountBtn">Create new account</a>
+                              </div>
+                       </form>
+                      
+              
+               
+             </div>
+             <p class="para"><b id="bold">create a page</b> for a celebrity brand or business</p>
+
+    <!-- Registration Modal -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Sign Up</h2>
+            <form id="registrationForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <input type="text" id="firstName" placeholder="First name" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="text" id="lastName" placeholder="Last name" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" id="regEmail" placeholder="Email address" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" id="confirmEmail" placeholder="Confirm email address" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" id="regPassword" placeholder="New password" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <select id="birthMonth" required>
+                            <option value="">Month</option>
+                            <option value="1">Jan</option>
+                            <option value="2">Feb</option>
+                            <option value="3">Mar</option>
+                            <option value="4">Apr</option>
+                            <option value="5">May</option>
+                            <option value="6">Jun</option>
+                            <option value="7">Jul</option>
+                            <option value="8">Aug</option>
+                            <option value="9">Sep</option>
+                            <option value="10">Oct</option>
+                            <option value="11">Nov</option>
+                            <option value="12">Dec</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select id="birthDay" required>
+                            <option value="">Day</option>
+                            <script>
+                                for(let i = 1; i <= 31; i++) {
+                                    document.write(`<option value="${i}">${i}</option>`);
+                                }
+                            </script>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <select id="birthYear" required>
+                            <option value="">Year</option>
+                            <script>
+                                const currentYear = new Date().getFullYear();
+                                for(let i = currentYear; i >= currentYear - 100; i--) {
+                                    document.write(`<option value="${i}">${i}</option>`);
+                                }
+                            </script>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Gender:</label>
+                    <div style="display: flex; gap: 15px;">
+                        <label style="display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="gender" value="female" required>
+                            Female
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="gender" value="male" required>
+                            Male
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px;">
+                            <input type="radio" name="gender" value="other" required>
+                            Other
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="signup-btn" id="signupBtn">Sign Up</button>
+                
+                <div class="terms-text">
+                    By clicking Sign Up, you agree to our 
+                    <a href="#" onclick="alert('Terms of Service would be displayed here')">Terms</a>, 
+                    <a href="#" onclick="alert('Privacy Policy would be displayed here')">Privacy Policy</a> and 
+                    <a href="#" onclick="alert('Cookie Policy would be displayed here')">Cookie Policy</a>.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Password Recovery Modal -->
+    <div id="passwordRecoveryModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeRecoveryModal">&times;</span>
+            
+            <!-- Step 1: Email Input -->
+            <div id="step1" class="recovery-step active">
+                <h2>Find Your Account</h2>
+                <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                    Please enter your email address or phone number to search for your account.
+                </p>
+                <form id="recoveryForm">
+                    <div class="form-group">
+                        <input type="text" id="recoveryEmail" placeholder="Email address or phone number" required>
+                    </div>
+                    <button type="submit" class="btn-primary" id="searchAccountBtn">Search</button>
+                </form>
+            </div>
+
+            <!-- Step 2: Verification Code -->
+            <div id="step2" class="recovery-step">
+                <button class="back-btn" onclick="goToStep(1)">← Back</button>
+                <h2>Enter Security Code</h2>
+                <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                    We sent a code to <span id="userEmail" style="font-weight: bold;"></span>
+                </p>
+                <form id="verificationForm">
+                    <div class="verification-code">
+                        <input type="text" maxlength="1" class="code-input" data-index="0">
+                        <input type="text" maxlength="1" class="code-input" data-index="1">
+                        <input type="text" maxlength="1" class="code-input" data-index="2">
+                        <input type="text" maxlength="1" class="code-input" data-index="3">
+                        <input type="text" maxlength="1" class="code-input" data-index="4">
+                        <input type="text" maxlength="1" class="code-input" data-index="5">
+                    </div>
+                    <button type="submit" class="btn-primary" id="verifyCodeBtn">Continue</button>
+                </form>
+                <div style="text-align: center; margin-top: 15px;">
+                    <a href="#" class="resend-link" id="resendCodeBtn">Resend Code</a>
+                </div>
+            </div>
+
+            <!-- Step 3: New Password -->
+            <div id="step3" class="recovery-step">
+                <button class="back-btn" onclick="goToStep(2)">← Back</button>
+                <h2>Create New Password</h2>
+                <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                    Your password must be at least 8 characters long.
+                </p>
+                <form id="newPasswordForm">
+                    <div class="form-group">
+                        <input type="password" id="newPassword" placeholder="New password" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="confirmNewPassword" placeholder="Confirm new password" required>
+                    </div>
+                    
+                    <div class="password-requirements">
+                        <h4>Password Requirements:</h4>
+                        <div class="requirement" id="req-length">
+                            <i class="fas fa-circle"></i>
+                            <span>At least 8 characters</span>
+                        </div>
+                        <div class="requirement" id="req-uppercase">
+                            <i class="fas fa-circle"></i>
+                            <span>One uppercase letter</span>
+                        </div>
+                        <div class="requirement" id="req-lowercase">
+                            <i class="fas fa-circle"></i>
+                            <span>One lowercase letter</span>
+                        </div>
+                        <div class="requirement" id="req-number">
+                            <i class="fas fa-circle"></i>
+                            <span>One number</span>
+                        </div>
+                        <div class="requirement" id="req-special">
+                            <i class="fas fa-circle"></i>
+                            <span>One special character</span>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary" id="resetPasswordBtn">Reset Password</button>
+                </form>
+            </div>
+
+            <!-- Step 4: Success -->
+            <div id="step4" class="recovery-step">
+                <h2>Password Reset Complete</h2>
+                <div style="text-align: center; margin: 30px 0;">
+                    <i class="fas fa-check-circle" style="font-size: 60px; color: #42b72a;"></i>
+                </div>
+                <p style="text-align: center; color: #666; margin-bottom: 20px;">
+                    Your password has been successfully reset. You can now log in with your new password.
+                </p>
+                <button class="btn-primary" onclick="closeRecoveryModal()">Continue to Login</button>
+            </div>
+        </div>
+    </div>
+            
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const emailInput = document.getElementById('emailInput');
+            const passwordInput = document.getElementById('passwordInput');
+            const loginBtn = document.getElementById('loginBtn');
+            const createAccountBtn = document.getElementById('createAccountBtn');
+            const registrationModal = document.getElementById('registrationModal');
+            const closeModal = document.getElementById('closeModal');
+            const registrationForm = document.getElementById('registrationForm');
+            const signupBtn = document.getElementById('signupBtn');
+            
+            // Password Recovery Elements
+            const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+            const passwordRecoveryModal = document.getElementById('passwordRecoveryModal');
+            const closeRecoveryModal = document.getElementById('closeRecoveryModal');
+            const recoveryForm = document.getElementById('recoveryForm');
+            const verificationForm = document.getElementById('verificationForm');
+            const newPasswordForm = document.getElementById('newPasswordForm');
+            const searchAccountBtn = document.getElementById('searchAccountBtn');
+            const verifyCodeBtn = document.getElementById('verifyCodeBtn');
+            const resetPasswordBtn = document.getElementById('resetPasswordBtn');
+            const resendCodeBtn = document.getElementById('resendCodeBtn');
+            const codeInputs = document.querySelectorAll('.code-input');
+            const newPasswordInput = document.getElementById('newPassword');
+            const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
+
+            let currentStep = 1;
+            let verificationCode = '';
+            let userEmail = '';
+
+            // Password Recovery Modal functionality
+            forgotPasswordBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                passwordRecoveryModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                currentStep = 1;
+                showStep(1);
+                clearRecoveryForms();
+            });
+
+            closeRecoveryModal.addEventListener('click', function() {
+                closeRecoveryModalFunction();
+            });
+
+            // Close recovery modal when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === passwordRecoveryModal) {
+                    closeRecoveryModalFunction();
+                }
+            });
+
+            function closeRecoveryModalFunction() {
+                passwordRecoveryModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                currentStep = 1;
+                showStep(1);
+                clearRecoveryForms();
+            }
+
+            function clearRecoveryForms() {
+                recoveryForm.reset();
+                verificationForm.reset();
+                newPasswordForm.reset();
+                const messages = passwordRecoveryModal.querySelectorAll('.error-message, .success-message');
+                messages.forEach(msg => msg.remove());
+                codeInputs.forEach(input => input.style.borderColor = '');
+                newPasswordInput.style.borderColor = '';
+                confirmNewPasswordInput.style.borderColor = '';
+                resetPasswordRequirements();
+            }
+
+            function showStep(step) {
+                document.querySelectorAll('.recovery-step').forEach(s => s.classList.remove('active'));
+                document.getElementById(`step${step}`).classList.add('active');
+                currentStep = step;
+            }
+
+            function goToStep(step) {
+                showStep(step);
+            }
+
+            // Step 1: Search Account
+            recoveryForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('recoveryEmail').value.trim();
+                
+                if (!email) {
+                    showRecoveryError('Please enter your email address or phone number');
+                    return;
+                }
+
+                if (!isValidEmail(email) && !isValidPhone(email)) {
+                    showRecoveryError('Please enter a valid email address or phone number');
+                    return;
+                }
+
+                userEmail = email;
+                document.getElementById('userEmail').textContent = email;
+                
+                // Generate verification code
+                verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+                
+                // Simulate sending code
+                searchAccountBtn.textContent = 'Searching...';
+                searchAccountBtn.disabled = true;
+                
+                setTimeout(() => {
+                    showRecoverySuccess('Account found! Verification code sent.');
+                    setTimeout(() => {
+                        showStep(2);
+                        searchAccountBtn.textContent = 'Search';
+                        searchAccountBtn.disabled = false;
+                    }, 1000);
+                }, 1500);
+            });
+
+            // Step 2: Verification Code
+            verificationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const enteredCode = Array.from(codeInputs).map(input => input.value).join('');
+                
+                if (enteredCode.length !== 6) {
+                    showRecoveryError('Please enter the complete 6-digit code');
+                    return;
+                }
+
+                if (enteredCode !== verificationCode) {
+                    showRecoveryError('Invalid verification code. Please try again.');
+                    codeInputs.forEach(input => input.style.borderColor = 'red');
+                    return;
+                }
+
+                showRecoverySuccess('Code verified successfully!');
+                setTimeout(() => {
+                    showStep(3);
+                }, 1000);
+            });
+
+            // Step 3: New Password
+            newPasswordForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const newPassword = newPasswordInput.value;
+                const confirmPassword = confirmNewPasswordInput.value;
+                
+                if (!validatePassword(newPassword)) {
+                    showRecoveryError('Password does not meet requirements');
+                    return;
+                }
+
+                if (newPassword !== confirmPassword) {
+                    showRecoveryError('Passwords do not match');
+                    confirmNewPasswordInput.style.borderColor = 'red';
+                    return;
+                }
+
+                resetPasswordBtn.textContent = 'Resetting...';
+                resetPasswordBtn.disabled = true;
+                
+                setTimeout(() => {
+                    showRecoverySuccess('Password reset successfully!');
+                    setTimeout(() => {
+                        showStep(4);
+                        resetPasswordBtn.textContent = 'Reset Password';
+                        resetPasswordBtn.disabled = false;
+                    }, 1000);
+                }, 1500);
+            });
+
+            // Verification code input handling
+            codeInputs.forEach((input, index) => {
+                input.addEventListener('input', function() {
+                    if (this.value.length === 1 && index < codeInputs.length - 1) {
+                        codeInputs[index + 1].focus();
+                    }
+                });
+
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value.length === 0 && index > 0) {
+                        codeInputs[index - 1].focus();
+                    }
+                });
+            });
+
+            // Password validation
+            newPasswordInput.addEventListener('input', function() {
+                validatePasswordRequirements(this.value);
+            });
+
+            function validatePassword(password) {
+                const requirements = {
+                    length: password.length >= 8,
+                    uppercase: /[A-Z]/.test(password),
+                    lowercase: /[a-z]/.test(password),
+                    number: /\d/.test(password),
+                    special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+                };
+
+                return Object.values(requirements).every(req => req);
+            }
+
+            function validatePasswordRequirements(password) {
+                const requirements = {
+                    length: password.length >= 8,
+                    uppercase: /[A-Z]/.test(password),
+                    lowercase: /[a-z]/.test(password),
+                    number: /\d/.test(password),
+                    special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+                };
+
+                Object.keys(requirements).forEach(req => {
+                    const element = document.getElementById(`req-${req}`);
+                    if (requirements[req]) {
+                        element.classList.remove('invalid');
+                        element.classList.add('valid');
+                        element.querySelector('i').className = 'fas fa-check';
+                    } else {
+                        element.classList.remove('valid');
+                        element.classList.add('invalid');
+                        element.querySelector('i').className = 'fas fa-circle';
+                    }
+                });
+            }
+
+            function resetPasswordRequirements() {
+                document.querySelectorAll('.requirement').forEach(req => {
+                    req.classList.remove('valid', 'invalid');
+                    req.querySelector('i').className = 'fas fa-circle';
+                });
+            }
+
+            // Resend code functionality
+            resendCodeBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                if (this.classList.contains('disabled')) return;
+                
+                verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+                
+                this.textContent = 'Code sent!';
+                this.classList.add('disabled');
+                
+                setTimeout(() => {
+                    this.textContent = 'Resend Code';
+                    this.classList.remove('disabled');
+                }, 30000); // 30 seconds cooldown
+            });
+
+            // Helper functions for recovery
+            function showRecoveryError(message) {
+                const existingMessages = passwordRecoveryModal.querySelectorAll('.error-message, .success-message');
+                existingMessages.forEach(msg => msg.remove());
+
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = message;
+                passwordRecoveryModal.querySelector('.modal-content').insertBefore(errorDiv, passwordRecoveryModal.querySelector('.recovery-step.active'));
+            }
+
+            function showRecoverySuccess(message) {
+                const existingMessages = passwordRecoveryModal.querySelectorAll('.error-message, .success-message');
+                existingMessages.forEach(msg => msg.remove());
+
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.textContent = message;
+                passwordRecoveryModal.querySelector('.modal-content').insertBefore(successDiv, passwordRecoveryModal.querySelector('.recovery-step.active'));
+            }
+
+            // Modal functionality
+            createAccountBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                registrationModal.style.display = 'block';
+                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            });
+
+            closeModal.addEventListener('click', function() {
+                registrationModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                clearRegistrationForm();
+            });
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === registrationModal) {
+                    registrationModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                    clearRegistrationForm();
+                }
+            });
+
+            // Clear registration form
+            function clearRegistrationForm() {
+                registrationForm.reset();
+                const messages = registrationForm.querySelectorAll('.error-message, .success-message');
+                messages.forEach(msg => msg.remove());
+                const inputs = registrationForm.querySelectorAll('input');
+                inputs.forEach(input => input.style.borderColor = '');
+            }
+
+            // Registration form validation and submission
+            registrationForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const firstName = document.getElementById('firstName').value.trim();
+                const lastName = document.getElementById('lastName').value.trim();
+                const regEmail = document.getElementById('regEmail').value.trim();
+                const confirmEmail = document.getElementById('confirmEmail').value.trim();
+                const regPassword = document.getElementById('regPassword').value;
+                const birthMonth = document.getElementById('birthMonth').value;
+                const birthDay = document.getElementById('birthDay').value;
+                const birthYear = document.getElementById('birthYear').value;
+                const gender = document.querySelector('input[name="gender"]:checked');
+
+                // Clear previous messages
+                const existingMessages = registrationForm.querySelectorAll('.error-message, .success-message');
+                existingMessages.forEach(msg => msg.remove());
+
+                // Validation
+                if (!firstName || firstName.length < 2) {
+                    showRegistrationError('First name must be at least 2 characters long');
+                    return;
+                }
+
+                if (!lastName || lastName.length < 2) {
+                    showRegistrationError('Last name must be at least 2 characters long');
+                    return;
+                }
+
+                if (!isValidEmail(regEmail)) {
+                    showRegistrationError('Please enter a valid email address');
+                    return;
+                }
+
+                if (regEmail !== confirmEmail) {
+                    showRegistrationError('Email addresses do not match');
+                    return;
+                }
+
+                if (regPassword.length < 8) {
+                    showRegistrationError('Password must be at least 8 characters long');
+                    return;
+                }
+
+                if (!birthMonth || !birthDay || !birthYear) {
+                    showRegistrationError('Please select your complete birth date');
+                    return;
+                }
+
+                // Age validation (must be at least 13 years old)
+                const birthDate = new Date(birthYear, birthMonth - 1, birthDay);
+                const today = new Date();
+                const age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                
+                if (age < 13 || (age === 13 && monthDiff < 0) || (age === 13 && monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    showRegistrationError('You must be at least 13 years old to create an account');
+                    return;
+                }
+
+                if (!gender) {
+                    showRegistrationError('Please select your gender');
+                    return;
+                }
+
+                // Simulate registration process
+                setSignupLoadingState(true);
+                
+                setTimeout(() => {
+                    showRegistrationSuccess('Account created successfully! Welcome to Facebook!');
+                    
+                    setTimeout(() => {
+                        alert(`Welcome ${firstName} ${lastName}! Your Facebook account has been created successfully.`);
+                        registrationModal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                        clearRegistrationForm();
+                    }, 2000);
+                    
+                    setSignupLoadingState(false);
+                }, 2000);
+            });
+
+            // Registration helper functions
+            function showRegistrationError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = message;
+                registrationForm.insertBefore(errorDiv, signupBtn);
+            }
+
+            function showRegistrationSuccess(message) {
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.textContent = message;
+                registrationForm.insertBefore(successDiv, signupBtn);
+            }
+
+            function setSignupLoadingState(isLoading) {
+                if (isLoading) {
+                    signupBtn.textContent = 'Creating Account...';
+                    signupBtn.disabled = true;
+                } else {
+                    signupBtn.textContent = 'Sign Up';
+                    signupBtn.disabled = false;
+                }
+            }
+
+            // Add loading state to button
+            function setLoadingState(isLoading) {
+                if (isLoading) {
+                    loginBtn.value = 'Logging in...';
+                    loginBtn.disabled = true;
+                    loginBtn.style.opacity = '0.7';
+                } else {
+                    loginBtn.value = 'login';
+                    loginBtn.disabled = false;
+                    loginBtn.style.opacity = '1';
+                }
+            }
+
+            // Validate email format
+            function isValidEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+
+            // Validate phone number format (basic validation)
+            function isValidPhone(phone) {
+                const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+                return phoneRegex.test(phone.replace(/\s/g, ''));
+            }
+
+            // Show error message
+            function showError(message) {
+                // Remove existing error message
+                const existingError = document.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.style.color = 'red';
+                errorDiv.style.fontSize = '14px';
+                errorDiv.style.marginTop = '5px';
+                errorDiv.style.textAlign = 'center';
+                errorDiv.textContent = message;
+
+                loginForm.insertBefore(errorDiv, loginForm.querySelector('hr'));
+            }
+
+            // Show success message
+            function showSuccess(message) {
+                const existingError = document.querySelector('.error-message');
+                if (existingError) {
+                    existingError.remove();
+                }
+
+                const successDiv = document.createElement('div');
+                successDiv.className = 'success-message';
+                successDiv.style.color = 'green';
+                successDiv.style.fontSize = '14px';
+                successDiv.style.marginTop = '5px';
+                successDiv.style.textAlign = 'center';
+                successDiv.textContent = message;
+
+                loginForm.insertBefore(successDiv, loginForm.querySelector('hr'));
+            }
+
+            // Handle form submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+
+                // Clear previous messages
+                const existingMessage = document.querySelector('.error-message, .success-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+
+                // Validation
+                if (!email) {
+                    showError('Please enter your email address or phone number');
+                    emailInput.focus();
+                    return;
+                }
+
+                if (!password) {
+                    showError('Please enter your password');
+                    passwordInput.focus();
+                    return;
+                }
+
+                // Check if input is email or phone
+                const isEmail = isValidEmail(email);
+                const isPhone = isValidPhone(email);
+
+                if (!isEmail && !isPhone) {
+                    showError('Please enter a valid email address or phone number');
+                    emailInput.focus();
+                    return;
+                }
+
+                if (password.length < 6) {
+                    showError('Password must be at least 6 characters long');
+                    passwordInput.focus();
+                    return;
+                }
+
+                // Simulate login process
+                setLoadingState(true);
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    // For demo purposes, accept any valid email/phone with password length >= 6
+                    showSuccess('Login successful! Redirecting...');
+                    
+                    // Simulate redirect after 2 seconds
+                    setTimeout(() => {
+                        alert('Welcome to Facebook! This is a demo login.');
+                        // In a real application, you would redirect to the dashboard
+                        // window.location.href = '/dashboard';
+                    }, 2000);
+                    
+                    setLoadingState(false);
+                }, 1500);
+            });
+
+            // Add input validation on blur
+            emailInput.addEventListener('blur', function() {
+                const email = this.value.trim();
+                if (email && !isValidEmail(email) && !isValidPhone(email)) {
+                    this.style.borderColor = 'red';
+                } else {
+                    this.style.borderColor = '';
+                }
+            });
+
+            passwordInput.addEventListener('blur', function() {
+                const password = this.value.trim();
+                if (password && password.length < 6) {
+                    this.style.borderColor = 'red';
+                } else {
+                    this.style.borderColor = '';
+                }
+            });
+
+            // Clear validation styling on input
+            emailInput.addEventListener('input', function() {
+                this.style.borderColor = '';
+                const existingMessage = document.querySelector('.error-message, .success-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+            });
+
+            passwordInput.addEventListener('input', function() {
+                this.style.borderColor = '';
+                const existingMessage = document.querySelector('.error-message, .success-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+            });
+        });
+
+        // Global function for closing recovery modal
+        function closeRecoveryModal() {
+            document.getElementById('passwordRecoveryModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    </script>
+
+</body>
+</html>

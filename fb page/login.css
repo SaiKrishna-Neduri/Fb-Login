@@ -1,0 +1,82 @@
+
+body{
+    background-color: rgba(112, 178, 236, 0.963);
+}
+.content .h1{
+    font-weight: 700;
+    font-size: 72px;
+}
+.content .paragraph{
+    width:600px;
+    font-size: 32px;
+    color: black;
+}
+
+.container{
+    display:flex;
+    flex-direction: row;
+  
+
+    position:relative;
+    top:150px;
+    left:100px;
+}
+
+.login1{
+    width:25rem;
+    height:25rem;
+    background-color: white;
+    
+    padding:10px;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.login1 .username{
+    width:100%;
+    height:50px;  
+}
+.login1 .password{
+    
+        width:100%;
+        height:50px;   
+}
+
+.pholder:focus{
+    outline:2px solid blue;
+}
+.login1 .btn{
+    height:50px;   
+}
+.forgetpassword{
+    text-align: center;
+    text-decoration: none;
+}
+.forgetpassword:hover{
+    text-decoration: underline;
+}
+.login1 .createnew{
+    border:0px solid black;
+    width:50%;
+    margin-left:28%;
+    background-color: #42b72a;;
+    
+    display:flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.createnew .account{
+    text-decoration: none;
+    color:white;
+    font-weight: 600;
+   
+}
+.para{
+    position:relative;
+    left:830px;
+    top:180px;
+}
+#bold:hover{
+      text-decoration: underline;
+}
